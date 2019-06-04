@@ -15,7 +15,7 @@ const db = knex(knexConfig);
 
 //working
 router.get('/', (req, res) => {
-    db('zoos')
+    db('bears')
     .then(result => {
         res.json(result)
     })
@@ -27,12 +27,12 @@ router.get('/', (req, res) => {
 //WORKING
 router.get('/:id', (req, res) => {
 
-    db('zoos')
+    db('bears')
     .where({ id: req.params.id })
     .first()
     .then(result => {
         if (!result) {
-            res.status(404).json({ message: 'user not found'})
+            res.status(404).json({ message:'Bear not found'})
         } else {
             res.json(result)
         }
@@ -46,11 +46,11 @@ router.get('/:id', (req, res) => {
 //working
 router.post('/', (req, res) => {
     const post = req.body;
-    db('zoos') 
+    db('bears') 
     .insert(post, 'id')
     .then(result => {
         if (req.body.name.length === 0 || !req.body.name) {
-            res.status(400).json({ message: 'Please provide a name'})
+            res.status(400).json({ message: 'Please provide a name for the bear'})
         } else {
             res.status(201).json(result)
         }
@@ -65,14 +65,14 @@ router.put('/:id', (req, res) => {
     const changes = req.body;
     const id = req.params.id;
 
-    db('zoos')
+    db('bears')
     .where({ id: req.params.id })
     .update(changes)
     .then(count => {
         if (count > 0) {
             res.json(count)
         } else {
-            res.status(404).json({ message: 'User not found'})
+            res.status(404).json({ message: 'Bear not found'})
         }
         
     })
@@ -85,14 +85,14 @@ router.put('/:id', (req, res) => {
 router.delete('/:id', (req, res) => {
     const id = req.params.id;
 
-    db('zoos')
+    db('bears')
     .where({ id: req.params.id })
     .del()
     .then(count => {
         if (count > 0){
             res.status(200).json(count)
         } else {
-            res.status(404).json({ message: 'User not found'})
+            res.status(404).json({ message: 'Bear not found'})
         }
     })
     .catch(error => {
