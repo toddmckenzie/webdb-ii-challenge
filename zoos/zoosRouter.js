@@ -81,10 +81,13 @@ router.put('/:id', (req, res) => {
     })
 })
 
+//working
 router.delete('/:id', (req, res) => {
     const id = req.params.id;
 
-    db(id)
+    db('zoos')
+    .where({ id: req.params.id })
+    .del()
     .then(count => {
         if (count > 0){
             return res.status(200).json(count)
