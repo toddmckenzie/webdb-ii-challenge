@@ -60,14 +60,21 @@ router.post('/', (req, res) => {
         res.status(500).json({ message: 'Internal server error.'})
     })
 })
-
+//working
 router.put('/:id', (req, res) => {
-    const post = { ...req.body };
+    const changes = req.body;
     const id = req.params.id;
 
-    db(id, post)
-    .then(result => {
-        res.json(result)
+    db('zoos')
+    .where({ id: req.params.id })
+    .update(changes)
+    .then(count => {
+        if (count > 0) {
+            res.json(count)
+        } else {
+            res.status(404).json({ message: 'User not found'})
+        }
+        
     })
     .catch(error => {
         res.status(500).json({ message: 'Internal server error.'})
