@@ -12,6 +12,8 @@ const knexConfig = {
 
 const db = knex(knexConfig);
 
+
+//working
 router.get('/', (req, res) => {
     db('zoos')
     .then(result => {
@@ -22,17 +24,26 @@ router.get('/', (req, res) => {
     })
 })
 
+//WORKING
 router.get('/:id', (req, res) => {
-    db(req.params.id)
+
+    db('zoos')
+    .where({ id: req.params.id })
+    .first()
     .then(result => {
-        res.json(result)
+        if (!result) {
+            res.status(404).json({ message: 'user not found'})
+        } else {
+            res.json(result)
+        }
+        
     })
     .catch(error => {
         res.status(500).json({ message: 'Internal server error.'})
     })
 })
 
-
+//working
 router.post('/', (req, res) => {
     const post = req.body;
     db('zoos') 
