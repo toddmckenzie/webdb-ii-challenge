@@ -35,9 +35,15 @@ router.get('/:id', (req, res) => {
 
 router.post('/', (req, res) => {
     const post = req.body;
-    db(req.body)
+    db('zoos') 
+    .insert(post, 'id')
     .then(result => {
-        res.status(201).json(result)
+        if (req.body.name.length === 0 || !req.body.name) {
+            res.status(400).json({ message: 'Please provide a name'})
+        } else {
+            res.status(201).json(result)
+        }
+        
     })
     .catch(error => {
         res.status(500).json({ message: 'Internal server error.'})
