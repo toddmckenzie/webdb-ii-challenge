@@ -1,0 +1,104 @@
+const knex = require('knex');
+
+const router = require('express').Router();
+
+const knexConfig = {
+    client: 'sqlite3',
+    connection: {
+        filename: './data/lambda.db3'
+    },
+    useNullAsDefault: true
+};
+
+const db = knex(knexConfig);
+
+
+//working
+router.get('/', (req, res) => {
+    db('bears')
+    .then(result => {
+        res.json(result)
+    })
+    .catch(error => {
+        res.status(500).json({ message: 'internal server error.'})
+    })
+})
+
+//WORKING
+router.get('/:id', (req, res) => {
+
+    db('bears')
+    .where({ id: req.params.id })
+    .first()
+    .then(result => {
+        if (!result) {
+            res.status(404).json({ message:'Bear not found'})
+        } else {
+            res.json(result)
+        }
+        
+    })
+    .catch(error => {
+        res.status(500).json({ message: 'Internal server error.'})
+    })
+})
+
+//working
+router.post('/', (req, res) => {
+    const post = req.body;
+    db('bears') 
+    .insert(post, 'id')
+    .then(result => {
+        if (req.body.name.length === 0 || !req.body.name) {
+            res.status(400).json({ message: 'Please provide a name for the bear'})
+        } else {
+            res.status(201).json(result)
+        }
+        
+    })
+    .catch(error => {
+        res.status(500).json({ message: 'Internal server error.'})
+    })
+})
+//working
+router.put('/:id', (req, res) => {
+    const changes = req.body;
+    const id = req.params.id;
+
+    db('bears')
+    .where({ id: req.params.id })
+    .update(changes)
+    .then(count => {
+        if (count > 0) {
+            res.json(count)
+        } else {
+            res.status(404).json({ message: 'Bear not found'})
+        }
+        
+    })
+    .catch(error => {
+        res.status(500).json({ message: 'Internal server error.'})
+    })
+})
+
+//working
+router.delete('/:id', (req, res) => {
+    const id = req.params.id;
+
+    db('bears')
+    .where({ id: req.params.id })
+    .del()
+    .then(count => {
+        if (count > 0){
+            res.status(200).json(count)
+        } else {
+            res.status(404).json({ message: 'Bear not found'})
+        }
+    })
+    .catch(error => {
+        res.status(500).json({ message: 'Internal server error'})
+    })
+})
+
+
+module.exports = router;
